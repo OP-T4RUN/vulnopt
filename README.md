@@ -22,14 +22,14 @@ Standard vulnerability management commonly prioritizes findings by sorting solel
 
 ---
 
-## 2. Team Roles & Module Architecture
+## 2. System Architecture & Modules
 
-| Role | Student | Responsibilities | Key Modules |
-|---|---|---|---|
-| **Student 1** | Public Data Pipeline | NVD, EPSS, KEV collection; cleaning; provenance; data summary | `vulnopt/data_collection.py`, `vulnopt/data_cleaning.py` |
-| **Student 2** | Synthetic Data & Risk Model | Simulated enterprise assets; risk scoring formula; sensitivity | `vulnopt/synthetic_data.py`, `vulnopt/risk_model.py` |
-| **Student 3** | Optimization Engine | CVSS & contextual greedy baselines; exact MILP; BPSO metaheuristic | `vulnopt/constraints.py`, `vulnopt/baselines.py`, `vulnopt/milp_solver.py`, `vulnopt/bpso.py` |
-| **Student 4** | Evaluation & Dashboard | Metrics calculation; experiment runner; Streamlit dashboard; report | `vulnopt/metrics.py`, `vulnopt/experiments.py`, `streamlit_app.py` |
+| Subsystem | Responsibilities | Key Modules |
+|---|---|---|
+| **Public Data Pipeline** | NVD, EPSS, KEV collection; cleaning; provenance; data summary | `vulnopt/data_collection.py`, `vulnopt/data_cleaning.py` |
+| **Enterprise Context & Risk Model** | Simulated enterprise assets; risk scoring formula; sensitivity | `vulnopt/synthetic_data.py`, `vulnopt/risk_model.py` |
+| **Optimization Engine** | CVSS & contextual greedy baselines; exact MILP; BPSO metaheuristic | `vulnopt/constraints.py`, `vulnopt/baselines.py`, `vulnopt/milp_solver.py`, `vulnopt/bpso.py` |
+| **Evaluation & Dashboard** | Metrics calculation; experiment runner; Streamlit dashboard; report | `vulnopt/metrics.py`, `vulnopt/experiments.py`, `streamlit_app.py` |
 
 ---
 
@@ -54,7 +54,44 @@ The project fuses three authoritative, credible public sources using standardize
 
 ---
 
-## 4. Setup and Installation
+## 4. Synthetic Enterprise Context & Risk Scoring Model
+
+### Synthetic Enterprise Data Strategy
+Because operational asset inventories and patching costs are proprietary, all organizational context is modeled synthetically and labeled as such:
+* **Assets (`data/synthetic/assets.csv`):** Simulated devices with `criticality` (1–5 scale), `exposure` (`internet`, `internal`, `restricted`), and environment (`production`, `staging`, `development`).
+* **Hybrid Device Matching:** Assigns CVEs using keyword patterns (e.g., WordPress/PHP to web servers, SQL/DBMS to databases, Active Directory/OAuth to identity services) with deterministic random fallback.
+* **Remediation Resource Estimation:** Patch costs ($C_i$), engineer-hours ($T_i$), and downtime ($D_i$) are generated via right-skewed Log-normal and Exponential distributions with positive average correlation to asset criticality and CVSS severity.
+* **Benchmark Scales:**
+  * Small: 100 findings
+  * Medium: 1,000 findings (Default benchmark)
+  * Large: 5,000 findings
+
+### Configurable Risk Priority Score ($R_i$)
+The model combines threat intelligence with business impact into an explainable 0–100 priority score:
+
+$$Q_i = w_s \cdot S_i + w_e \cdot E_i + w_k \cdot K_i + w_a \cdot A_i + w_x \cdot X_i$$
+
+$$R_i = 100 \times Q_i$$
+
+Where normalized components are bounded in $[0, 1]$:
+* **$S_i$ (Severity):** $\text{CVSS}_i / 10.0$
+* **$E_i$ (Exploit Likelihood):** $\text{EPSS}_i \in [0, 1]$
+* **$K_i$ (Active Exploitation):** $1.0$ if present in CISA KEV catalog, else $0.0$
+* **$A_i$ (Asset Criticality):** $(\text{criticality}_i - 1) / 4.0$
+* **$X_i$ (Exposure):** $1.0$ (internet), $0.5$ (internal), $0.2$ (restricted)
+
+**Default Weights:**
+* CVSS ($w_s$): `0.25`
+* EPSS ($w_e$): `0.25`
+* KEV ($w_k$): `0.25`
+* Criticality ($w_a$): `0.15`
+* Exposure ($w_x$): `0.10`
+
+Alternative sensitivity scenarios (Threat-Focused, Asset-Focused, and Dirichlet random sampling) are supported.
+
+---
+
+## 5. Setup and Installation
 
 ### Prerequisites
 - Python 3.11+

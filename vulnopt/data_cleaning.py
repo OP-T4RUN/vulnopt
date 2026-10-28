@@ -1,5 +1,5 @@
 """
-Data cleaning and normalization module for VulnOpt (Student 1).
+Data cleaning and normalization module for VulnOpt.
 
 Standardizes public vulnerability records from NVD, EPSS, and CISA KEV
 into a clean, documented dataset ready for synthetic asset assignment and risk scoring.

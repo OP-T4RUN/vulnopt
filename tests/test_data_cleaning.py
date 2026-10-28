@@ -1,5 +1,5 @@
 """
-Offline unit tests for data cleaning and normalization (Student 1).
+Offline unit tests for data cleaning and normalization.
 """
 
 import json

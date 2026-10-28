@@ -1,0 +1,301 @@
+asset_id,asset_type,criticality,exposure,internet_facing,business_unit,environment,data_origin
+AST-00001,endpoint,3,internet,True,Engineering,development,synthetic
+AST-00002,internal_service,4,internet,True,Human Resources,staging,synthetic
+AST-00003,application_server,3,restricted,False,Human Resources,development,synthetic
+AST-00004,application_server,2,internet,True,Sales,production,synthetic
+AST-00005,identity_service,3,restricted,False,Human Resources,staging,synthetic
+AST-00006,internal_service,4,internal,False,Operations,production,synthetic
+AST-00007,web_server,2,restricted,False,Legal,staging,synthetic
+AST-00008,application_server,3,internal,False,Human Resources,production,synthetic
+AST-00009,web_server,3,internet,True,Sales,production,synthetic
+AST-00010,identity_service,4,restricted,False,Human Resources,production,synthetic
+AST-00011,identity_service,3,internal,False,Finance,production,synthetic
+AST-00012,web_server,1,internet,True,Human Resources,staging,synthetic
+AST-00013,endpoint,4,internet,True,Sales,production,synthetic
+AST-00014,web_server,3,internet,True,Sales,production,synthetic
+AST-00015,endpoint,3,internet,True,Engineering,production,synthetic
+AST-00016,web_server,3,internet,True,Sales,production,synthetic
+AST-00017,identity_service,2,internal,False,Legal,production,synthetic
+AST-00018,endpoint,3,internal,False,Finance,staging,synthetic
+AST-00019,application_server,4,internet,True,Operations,production,synthetic
+AST-00020,endpoint,3,internal,False,Engineering,production,synthetic
+AST-00021,web_server,3,internet,True,Engineering,production,synthetic
+AST-00022,endpoint,3,internet,True,Operations,production,synthetic
+AST-00023,internal_service,5,restricted,False,Operations,staging,synthetic
+AST-00024,endpoint,4,internet,True,Finance,production,synthetic
+AST-00025,web_server,5,internet,True,Human Resources,production,synthetic
+AST-00026,database,2,restricted,False,Finance,development,synthetic
+AST-00027,endpoint,3,internal,False,Engineering,staging,synthetic
+AST-00028,web_server,3,internet,True,Sales,production,synthetic
+AST-00029,application_server,2,internal,False,Finance,production,synthetic
+AST-00030,internal_service,3,internal,False,Sales,production,synthetic
+AST-00031,web_server,5,internet,True,Operations,production,synthetic
+AST-00032,application_server,3,internal,False,Human Resources,development,synthetic
+AST-00033,application_server,2,internal,False,Sales,production,synthetic
+AST-00034,web_server,4,internet,True,Sales,development,synthetic
+AST-00035,database,2,restricted,False,Engineering,staging,synthetic
+AST-00036,endpoint,4,internal,False,Finance,production,synthetic
+AST-00037,web_server,1,internal,False,Sales,production,synthetic
+AST-00038,identity_service,2,internal,False,Operations,development,synthetic
+AST-00039,database,2,internal,False,Finance,development,synthetic
+AST-00040,application_server,5,internal,False,Engineering,development,synthetic
+AST-00041,internal_service,4,internal,False,Operations,production,synthetic
+AST-00042,endpoint,3,internal,False,Finance,production,synthetic
+AST-00043,application_server,5,restricted,False,Engineering,production,synthetic
+AST-00044,web_server,2,internal,False,Engineering,production,synthetic
+AST-00045,web_server,2,internet,True,Finance,staging,synthetic
+AST-00046,web_server,1,internet,True,Legal,production,synthetic
+AST-00047,endpoint,2,internal,False,Legal,production,synthetic
+AST-00048,web_server,4,internal,False,Human Resources,staging,synthetic
+AST-00049,web_server,2,internet,True,Engineering,development,synthetic
+AST-00050,application_server,3,internal,False,Operations,development,synthetic
+AST-00051,internal_service,1,internet,True,Engineering,production,synthetic
+AST-00052,web_server,3,internet,True,Sales,development,synthetic
+AST-00053,internal_service,4,internet,True,Sales,production,synthetic
+AST-00054,web_server,4,internet,True,Human Resources,staging,synthetic
+AST-00055,database,3,internal,False,Human Resources,development,synthetic
+AST-00056,application_server,3,restricted,False,Sales,staging,synthetic
+AST-00057,application_server,2,restricted,False,Legal,production,synthetic
+AST-00058,web_server,1,internet,True,Human Resources,production,synthetic
+AST-00059,identity_service,2,internal,False,Legal,production,synthetic
+AST-00060,application_server,2,internet,True,Legal,production,synthetic
+AST-00061,web_server,2,internet,True,Operations,production,synthetic
+AST-00062,application_server,2,restricted,False,Sales,production,synthetic
+AST-00063,identity_service,1,internal,False,Legal,production,synthetic
+AST-00064,database,3,internal,False,Finance,production,synthetic
+AST-00065,database,2,restricted,False,Engineering,staging,synthetic
+AST-00066,web_server,4,restricted,False,Engineering,development,synthetic
+AST-00067,identity_service,4,internal,False,Sales,staging,synthetic
+AST-00068,database,3,internal,False,Human Resources,development,synthetic
+AST-00069,application_server,3,internal,False,Engineering,production,synthetic
+AST-00070,application_server,2,internal,False,Engineering,production,synthetic
+AST-00071,application_server,3,restricted,False,Finance,staging,synthetic
+AST-00072,internal_service,3,internal,False,Finance,production,synthetic
+AST-00073,identity_service,3,internal,False,Sales,staging,synthetic
+AST-00074,application_server,4,internal,False,Sales,production,synthetic
+AST-00075,identity_service,2,restricted,False,Sales,staging,synthetic
+AST-00076,web_server,5,restricted,False,Engineering,production,synthetic
+AST-00077,identity_service,3,restricted,False,Legal,staging,synthetic
+AST-00078,application_server,3,internal,False,Human Resources,production,synthetic
+AST-00079,web_server,3,internet,True,Operations,production,synthetic
+AST-00080,endpoint,4,internal,False,Operations,production,synthetic
+AST-00081,internal_service,2,internal,False,Human Resources,production,synthetic
+AST-00082,application_server,4,internal,False,Engineering,staging,synthetic
+AST-00083,internal_service,4,internal,False,Human Resources,production,synthetic
+AST-00084,web_server,2,internet,True,Operations,development,synthetic
+AST-00085,application_server,4,internal,False,Legal,production,synthetic
+AST-00086,application_server,3,internal,False,Legal,development,synthetic
+AST-00087,internal_service,2,internet,True,Legal,development,synthetic
+AST-00088,database,3,internal,False,Sales,production,synthetic
+AST-00089,identity_service,2,internal,False,Finance,production,synthetic
+AST-00090,internal_service,4,restricted,False,Operations,production,synthetic
+AST-00091,identity_service,2,restricted,False,Engineering,staging,synthetic
+AST-00092,endpoint,3,internal,False,Engineering,production,synthetic
+AST-00093,web_server,2,internet,True,Legal,production,synthetic
+AST-00094,internal_service,3,internet,True,Human Resources,production,synthetic
+AST-00095,web_server,3,internal,False,Legal,staging,synthetic
+AST-00096,web_server,4,internal,False,Finance,development,synthetic
+AST-00097,endpoint,4,internet,True,Operations,production,synthetic
+AST-00098,database,4,restricted,False,Finance,staging,synthetic
+AST-00099,web_server,4,internal,False,Engineering,production,synthetic
+AST-00100,internal_service,3,internal,False,Finance,production,synthetic
+AST-00101,web_server,4,internet,True,Operations,staging,synthetic
+AST-00102,web_server,5,internal,False,Finance,production,synthetic
+AST-00103,endpoint,3,internet,True,Finance,production,synthetic
+AST-00104,database,3,restricted,False,Legal,staging,synthetic
+AST-00105,web_server,3,internet,True,Legal,production,synthetic
+AST-00106,web_server,2,internet,True,Operations,production,synthetic
+AST-00107,database,3,internal,False,Engineering,production,synthetic
+AST-00108,database,2,internal,False,Operations,production,synthetic
+AST-00109,application_server,2,internal,False,Operations,production,synthetic
+AST-00110,endpoint,3,internal,False,Sales,production,synthetic
+AST-00111,database,3,internal,False,Sales,staging,synthetic
+AST-00112,endpoint,4,internal,False,Operations,development,synthetic
+AST-00113,database,4,internal,False,Sales,production,synthetic
+AST-00114,web_server,1,internet,True,Legal,staging,synthetic
+AST-00115,application_server,2,internal,False,Human Resources,production,synthetic
+AST-00116,web_server,4,internet,True,Finance,development,synthetic
+AST-00117,web_server,3,restricted,False,Sales,production,synthetic
+AST-00118,internal_service,4,internal,False,Operations,production,synthetic
+AST-00119,endpoint,3,internet,True,Operations,staging,synthetic
+AST-00120,database,2,restricted,False,Engineering,production,synthetic
+AST-00121,internal_service,3,internet,True,Human Resources,staging,synthetic
+AST-00122,application_server,3,internal,False,Legal,production,synthetic
+AST-00123,application_server,3,restricted,False,Finance,production,synthetic
+AST-00124,web_server,2,internet,True,Finance,production,synthetic
+AST-00125,database,3,restricted,False,Finance,production,synthetic
+AST-00126,endpoint,3,internal,False,Finance,staging,synthetic
+AST-00127,web_server,3,internal,False,Legal,production,synthetic
+AST-00128,application_server,4,internal,False,Operations,development,synthetic
+AST-00129,internal_service,3,internal,False,Operations,development,synthetic
+AST-00130,database,2,restricted,False,Operations,production,synthetic
+AST-00131,endpoint,2,internet,True,Finance,production,synthetic
+AST-00132,internal_service,3,internal,False,Finance,production,synthetic
+AST-00133,web_server,2,restricted,False,Sales,staging,synthetic
+AST-00134,endpoint,3,internal,False,Sales,staging,synthetic
+AST-00135,endpoint,5,internet,True,Operations,staging,synthetic
+AST-00136,endpoint,3,internal,False,Legal,production,synthetic
+AST-00137,internal_service,5,internal,False,Human Resources,production,synthetic
+AST-00138,application_server,2,internal,False,Human Resources,production,synthetic
+AST-00139,application_server,5,internal,False,Finance,production,synthetic
+AST-00140,endpoint,1,internal,False,Legal,production,synthetic
+AST-00141,internal_service,4,internet,True,Engineering,production,synthetic
+AST-00142,web_server,3,internal,False,Operations,staging,synthetic
+AST-00143,identity_service,4,internal,False,Operations,staging,synthetic
+AST-00144,endpoint,4,internal,False,Engineering,production,synthetic
+AST-00145,endpoint,1,internal,False,Human Resources,production,synthetic
+AST-00146,web_server,4,internal,False,Legal,production,synthetic
+AST-00147,application_server,3,restricted,False,Engineering,production,synthetic
+AST-00148,web_server,1,internal,False,Finance,production,synthetic
+AST-00149,identity_service,5,internal,False,Human Resources,production,synthetic
+AST-00150,database,5,internal,False,Operations,staging,synthetic
+AST-00151,application_server,5,internal,False,Operations,production,synthetic
+AST-00152,web_server,2,internet,True,Engineering,production,synthetic
+AST-00153,endpoint,2,internal,False,Legal,production,synthetic
+AST-00154,database,2,internal,False,Legal,development,synthetic
+AST-00155,application_server,5,internal,False,Legal,production,synthetic
+AST-00156,endpoint,2,internet,True,Human Resources,production,synthetic
+AST-00157,web_server,4,internal,False,Engineering,production,synthetic
+AST-00158,endpoint,3,restricted,False,Sales,production,synthetic
+AST-00159,endpoint,4,internet,True,Finance,development,synthetic
+AST-00160,database,2,restricted,False,Human Resources,staging,synthetic
+AST-00161,database,3,internal,False,Legal,production,synthetic
+AST-00162,web_server,2,internet,True,Legal,production,synthetic
+AST-00163,database,2,internal,False,Legal,production,synthetic
+AST-00164,web_server,3,internet,True,Engineering,production,synthetic
+AST-00165,application_server,3,restricted,False,Finance,production,synthetic
+AST-00166,web_server,3,internet,True,Engineering,production,synthetic
+AST-00167,application_server,4,internal,False,Sales,staging,synthetic
+AST-00168,web_server,3,internet,True,Finance,staging,synthetic
+AST-00169,application_server,5,internal,False,Operations,production,synthetic
+AST-00170,web_server,1,internal,False,Operations,production,synthetic
+AST-00171,web_server,2,internet,True,Engineering,production,synthetic
+AST-00172,web_server,3,internal,False,Engineering,production,synthetic
+AST-00173,web_server,4,internal,False,Operations,staging,synthetic
+AST-00174,identity_service,2,internal,False,Engineering,development,synthetic
+AST-00175,database,5,internal,False,Human Resources,production,synthetic
+AST-00176,endpoint,3,internal,False,Human Resources,production,synthetic
+AST-00177,application_server,1,internet,True,Human Resources,production,synthetic
+AST-00178,web_server,4,internal,False,Operations,staging,synthetic
+AST-00179,application_server,4,internet,True,Finance,production,synthetic
+AST-00180,endpoint,2,restricted,False,Engineering,production,synthetic
+AST-00181,web_server,1,internet,True,Sales,development,synthetic
+AST-00182,internal_service,4,internal,False,Sales,production,synthetic
+AST-00183,application_server,1,internal,False,Engineering,production,synthetic
+AST-00184,identity_service,1,internal,False,Finance,production,synthetic
+AST-00185,identity_service,2,internal,False,Finance,staging,synthetic
+AST-00186,endpoint,4,internal,False,Sales,production,synthetic
+AST-00187,internal_service,3,internal,False,Legal,production,synthetic
+AST-00188,database,3,restricted,False,Engineering,production,synthetic
+AST-00189,application_server,3,internal,False,Operations,production,synthetic
+AST-00190,web_server,4,internet,True,Legal,development,synthetic
+AST-00191,application_server,4,internal,False,Sales,development,synthetic
+AST-00192,endpoint,4,internal,False,Operations,staging,synthetic
+AST-00193,web_server,5,internet,True,Legal,development,synthetic
+AST-00194,web_server,4,restricted,False,Human Resources,production,synthetic
+AST-00195,application_server,4,internal,False,Sales,development,synthetic
+AST-00196,database,3,restricted,False,Operations,production,synthetic
+AST-00197,internal_service,3,internal,False,Operations,production,synthetic
+AST-00198,web_server,2,internet,True,Operations,staging,synthetic
+AST-00199,internal_service,2,restricted,False,Operations,production,synthetic
+AST-00200,application_server,2,internal,False,Human Resources,production,synthetic
+AST-00201,application_server,2,restricted,False,Engineering,production,synthetic
+AST-00202,endpoint,3,internet,True,Operations,production,synthetic
+AST-00203,application_server,4,restricted,False,Human Resources,development,synthetic
+AST-00204,internal_service,5,internet,True,Legal,production,synthetic
+AST-00205,application_server,3,internal,False,Human Resources,production,synthetic
+AST-00206,database,2,internal,False,Legal,production,synthetic
+AST-00207,identity_service,3,internal,False,Human Resources,staging,synthetic
+AST-00208,application_server,4,internal,False,Finance,staging,synthetic
+AST-00209,internal_service,2,internal,False,Human Resources,development,synthetic
+AST-00210,identity_service,2,internal,False,Engineering,production,synthetic
+AST-00211,web_server,4,internet,True,Sales,development,synthetic
+AST-00212,database,2,internal,False,Legal,production,synthetic
+AST-00213,internal_service,4,internal,False,Finance,staging,synthetic
+AST-00214,database,3,internal,False,Sales,production,synthetic
+AST-00215,web_server,5,internet,True,Legal,production,synthetic
+AST-00216,database,2,internal,False,Legal,production,synthetic
+AST-00217,web_server,5,internet,True,Legal,production,synthetic
+AST-00218,application_server,3,restricted,False,Sales,production,synthetic
+AST-00219,identity_service,4,restricted,False,Legal,production,synthetic
+AST-00220,application_server,1,internal,False,Engineering,production,synthetic
+AST-00221,endpoint,4,internal,False,Human Resources,staging,synthetic
+AST-00222,application_server,3,restricted,False,Finance,production,synthetic
+AST-00223,application_server,1,internal,False,Human Resources,production,synthetic
+AST-00224,endpoint,3,internet,True,Engineering,development,synthetic
+AST-00225,endpoint,3,internal,False,Sales,staging,synthetic
+AST-00226,internal_service,2,internal,False,Sales,production,synthetic
+AST-00227,identity_service,1,restricted,False,Finance,production,synthetic
+AST-00228,internal_service,3,internal,False,Legal,staging,synthetic
+AST-00229,internal_service,3,internal,False,Operations,staging,synthetic
+AST-00230,endpoint,3,internal,False,Operations,development,synthetic
+AST-00231,endpoint,2,internet,True,Operations,production,synthetic
+AST-00232,web_server,3,internet,True,Operations,staging,synthetic
+AST-00233,web_server,2,internal,False,Engineering,production,synthetic
+AST-00234,web_server,3,internet,True,Human Resources,production,synthetic
+AST-00235,web_server,2,internet,True,Legal,staging,synthetic
+AST-00236,database,4,restricted,False,Legal,development,synthetic
+AST-00237,application_server,3,internal,False,Human Resources,production,synthetic
+AST-00238,endpoint,1,internal,False,Legal,production,synthetic
+AST-00239,database,3,internal,False,Legal,development,synthetic
+AST-00240,database,3,internal,False,Legal,staging,synthetic
+AST-00241,web_server,5,restricted,False,Finance,development,synthetic
+AST-00242,endpoint,4,internal,False,Legal,staging,synthetic
+AST-00243,application_server,2,internal,False,Sales,staging,synthetic
+AST-00244,database,3,restricted,False,Finance,production,synthetic
+AST-00245,identity_service,2,restricted,False,Engineering,production,synthetic
+AST-00246,identity_service,2,internal,False,Operations,staging,synthetic
+AST-00247,application_server,5,internal,False,Legal,production,synthetic
+AST-00248,database,5,internal,False,Engineering,development,synthetic
+AST-00249,web_server,4,internet,True,Operations,production,synthetic
+AST-00250,web_server,4,internet,True,Legal,production,synthetic
+AST-00251,database,3,restricted,False,Human Resources,staging,synthetic
+AST-00252,internal_service,3,internal,False,Sales,production,synthetic
+AST-00253,internal_service,2,internet,True,Finance,production,synthetic
+AST-00254,endpoint,3,internal,False,Operations,staging,synthetic
+AST-00255,identity_service,3,restricted,False,Finance,production,synthetic
+AST-00256,application_server,4,restricted,False,Human Resources,production,synthetic
+AST-00257,web_server,2,internet,True,Finance,production,synthetic
+AST-00258,web_server,3,internet,True,Engineering,staging,synthetic
+AST-00259,endpoint,4,internal,False,Engineering,production,synthetic
+AST-00260,identity_service,3,internal,False,Engineering,staging,synthetic
+AST-00261,application_server,4,internal,False,Finance,production,synthetic
+AST-00262,endpoint,3,internet,True,Human Resources,production,synthetic
+AST-00263,web_server,4,internet,True,Human Resources,production,synthetic
+AST-00264,web_server,4,restricted,False,Engineering,production,synthetic
+AST-00265,web_server,3,internal,False,Legal,production,synthetic
+AST-00266,internal_service,4,internal,False,Operations,production,synthetic
+AST-00267,endpoint,2,internal,False,Engineering,staging,synthetic
+AST-00268,identity_service,4,internet,True,Sales,production,synthetic
+AST-00269,database,3,restricted,False,Finance,production,synthetic
+AST-00270,identity_service,3,internal,False,Operations,production,synthetic
+AST-00271,database,2,internal,False,Sales,production,synthetic
+AST-00272,web_server,2,internet,True,Human Resources,development,synthetic
+AST-00273,web_server,4,internal,False,Human Resources,production,synthetic
+AST-00274,web_server,2,internet,True,Operations,production,synthetic
+AST-00275,endpoint,2,internal,False,Operations,production,synthetic
+AST-00276,web_server,2,internet,True,Finance,development,synthetic
+AST-00277,application_server,1,internal,False,Operations,production,synthetic
+AST-00278,web_server,4,internet,True,Finance,development,synthetic
+AST-00279,web_server,2,internal,False,Operations,staging,synthetic
+AST-00280,endpoint,4,restricted,False,Engineering,production,synthetic
+AST-00281,web_server,3,internet,True,Operations,production,synthetic
+AST-00282,identity_service,2,internal,False,Legal,development,synthetic
+AST-00283,application_server,5,internal,False,Human Resources,production,synthetic
+AST-00284,web_server,2,internet,True,Operations,production,synthetic
+AST-00285,identity_service,3,internal,False,Human Resources,production,synthetic
+AST-00286,endpoint,5,internet,True,Operations,development,synthetic
+AST-00287,application_server,3,internal,False,Operations,production,synthetic
+AST-00288,database,2,internal,False,Operations,production,synthetic
+AST-00289,web_server,2,internet,True,Legal,staging,synthetic
+AST-00290,database,4,restricted,False,Operations,production,synthetic
+AST-00291,internal_service,3,restricted,False,Legal,staging,synthetic
+AST-00292,application_server,5,internet,True,Engineering,production,synthetic
+AST-00293,web_server,3,internal,False,Engineering,production,synthetic
+AST-00294,identity_service,3,internet,True,Engineering,production,synthetic
+AST-00295,endpoint,2,internal,False,Legal,development,synthetic
+AST-00296,application_server,2,internal,False,Operations,staging,synthetic
+AST-00297,database,5,internal,False,Human Resources,development,synthetic
+AST-00298,database,4,internal,False,Legal,production,synthetic
+AST-00299,identity_service,3,internal,False,Sales,production,synthetic
+AST-00300,application_server,3,internet,True,Legal,production,synthetic

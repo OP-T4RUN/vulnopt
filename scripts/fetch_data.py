@@ -1,5 +1,5 @@
 """
-Master script to execute the Student 1 data pipeline:
+Master script to execute the VulnOpt public data pipeline:
 1. Downloads CISA KEV JSON snapshot
 2. Downloads FIRST EPSS bulk compressed CSV
 3. Fetches real NVD CVE/CVSS records via NVD API 2.0 using the provided API key
@@ -39,7 +39,7 @@ def run_pipeline(
     skip_downloads: bool = False,
 ):
     print("=" * 60)
-    print("VulnOpt Data Collection & Normalization Pipeline (Student 1)")
+    print("VulnOpt Data Collection & Normalization Pipeline")
     print("=" * 60)
 
     load_env_file()

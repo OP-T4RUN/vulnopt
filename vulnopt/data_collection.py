@@ -1,5 +1,5 @@
 """
-Data collection module for VulnOpt (Student 1).
+Data collection module for VulnOpt.
 
 Retrieves public vulnerability data from:
 1. CISA Known Exploited Vulnerabilities (KEV) Catalog JSON feed
