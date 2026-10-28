@@ -1,0 +1,15 @@
+{
+  "snapshot_date": "2026-10-28",
+  "nvd_raw_records": 5000,
+  "records_excluded_missing_cvss": 175,
+  "records_excluded_invalid_cvss": 0,
+  "final_valid_records": 4825,
+  "kev_records_matched": 26,
+  "epss_available_count": 4825,
+  "epss_missing_count": 0,
+  "cvss_version_distribution": {
+    "3.1": 4825
+  },
+  "cvss_mean": 7.15,
+  "epss_mean": 0.0202
+}
