@@ -123,5 +123,81 @@ python scripts/fetch_data.py --max-records 5000
 ### Running Tests
 ```bash
 pytest
+pytest tests/test_metrics.py tests/test_experiments.py
 ```
+
+### Running Evaluation Experiments
+```bash
+# Full Part A grid (100 / 1,000 / 5,000 findings; 20 BPSO seeds; 100 Dirichlet vectors)
+python scripts/run_experiments.py
+
+# Reduced grid for smoke tests
+python scripts/run_experiments.py --quick
+```
+
+Outputs land in `results/tables/` (CSV + `experiment_config.json`) and `results/figures/` (PNG). Failed solver runs are written with `ran_successfully=false` and an `error_message`; metric fields are left empty rather than replaced with sample values.
+
+The dashboard (Part B) must read these saved files and must not reimplement metrics or solvers.
+
+---
+
+## 6. Evaluation Metrics (Part A)
+
+Shared definitions used for CVSS-Greedy, Risk-Greedy, MILP, and BPSO (`vulnopt/metrics.py`):
+
+| Metric | Definition |
+|---|---|
+| Total modeled risk reduction | \(\sum_i R_i x_i\) |
+| Percentage risk reduction | \(100 \times \sum_i R_i x_i / \sum_i R_i\). **Denominator:** sum of \(R_i\) over all candidate findings. `NaN` if that sum is 0. |
+| Budget / hours / downtime consumed | Dot product of the cost vector with \(x\). Remaining = limit − consumed. |
+| Percentage of a resource used | \(100 \times\) consumed / limit. `NaN` if the limit is 0. |
+| CISA KEV coverage | \(100 \times\) (selected KEV findings) / (KEV findings in the instance). **Denominator:** count of rows with `is_kev == 1`. `NaN` if that count is 0. |
+| Feasibility | Same predicate as `constraints.is_feasible` (all three capacities). |
+| Runtime | Wall-clock seconds around the existing solver call. MILP/BPSO also record `solver_runtime_s` from the solver when it reports one. |
+| MILP status / gap | Passed through from `MILPResult`; empty / `NaN` for greedy and BPSO. |
+
+Resource scenarios apply the same fraction independently to each capacity via `compute_default_budgets`:
+
+- Tight = 30% of \(\sum C_i\), \(\sum T_i\), and \(\sum D_i\)
+- Medium = 50%
+- Relaxed = 70%
+
+EPSS policies (applied before rescoring):
+
+- `zero_imputation` — pipeline default (`epss_score = epss.fillna(0.0)`)
+- `median_imputation` — missing EPSS replaced with the median of observed EPSS
+- `exclusion` — drop `epss_missing` rows, then rescore
+
+The current public snapshot may have zero missing EPSS values; in that case the three policies produce identical candidate sets and the experiment records that fact instead of inventing differences.
+
+---
+
+## 7. Part B dashboard contract
+
+Read-only inputs for `streamlit_app.py`. Column order for the five family tables is `vulnopt.metrics.RESULT_COLUMNS`.
+
+### CSV files (`results/tables/`)
+
+| File | Contents |
+|---|---|
+| `method_comparison.csv` | Four methods × {100, 1000, 5000} × {tight, medium, relaxed} |
+| `resource_utilization.csv` | Utilization columns derived from `method_comparison.csv` |
+| `feasibility.csv` | Feasibility / slack / solver status from the same runs |
+| `runtime.csv` | Wall-clock and solver runtimes from the same runs |
+| `bpso_seeds.csv` | BPSO medium-resource runs, seeds `0..19` |
+| `bpso_summary.csv` | Mean / std / min / max of BPSO seed metrics |
+| `sensitivity_named_weights.csv` | default / threat_focused / asset_focused (n=100, medium) |
+| `sensitivity_dirichlet.csv` | 100 seeded Dirichlet weight vectors (n=100, medium) |
+| `epss_handling.csv` | zero / median / exclusion policies |
+| `experiment_failures.csv` | Rows with `ran_successfully=false` (may be header-only) |
+| `schema_example.csv` | One documented example row |
+| `experiment_config.json` | Fractions, BPSO params, denominators, file map |
+
+### Shared columns (`RESULT_COLUMNS`)
+
+`experiment_id`, `experiment_family`, `dataset_size`, `dataset_path`, `resource_scenario`, `resource_fraction`, `method`, `seed`, `weight_scenario`, `weight_sample_id`, `epss_strategy`, `n_findings`, `n_selected`, `total_risk_reduction`, `total_risk_unmitigated`, `pct_risk_reduction`, `budget_limit`, `budget_consumed`, `budget_remaining`, `pct_budget_used`, `hours_limit`, `hours_consumed`, `hours_remaining`, `pct_hours_used`, `downtime_limit`, `downtime_consumed`, `downtime_remaining`, `pct_downtime_used`, `n_kev_total`, `n_kev_selected`, `pct_kev_coverage`, `feasible`, `runtime_s`, `solver_runtime_s`, `solver_status`, `optimality_gap`, `solver_backend`, `n_particles`, `max_iter`, `milp_time_limit`, `ran_successfully`, `error_message`
+
+`method` is one of `CVSS-Greedy`, `Risk-Greedy`, `MILP`, `BPSO`. Percentages are on a 0–100 scale. Undefined ratios are empty/`NaN`, not `0`.
+
+Example row: `results/tables/schema_example.csv`. Figures: `results/figures/*.png`.
 

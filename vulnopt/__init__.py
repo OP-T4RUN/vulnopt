@@ -20,4 +20,14 @@ from vulnopt.baselines import (  # noqa: F401
 )
 from vulnopt.milp_solver import solve_milp  # noqa: F401
 from vulnopt.bpso import solve_bpso  # noqa: F401
+from vulnopt.metrics import (  # noqa: F401
+    RESULT_COLUMNS,
+    canonicalize_method,
+    evaluate_selection,
+    evaluate_solver_result,
+)
+from vulnopt.experiments import (  # noqa: F401
+    ExperimentConfig,
+    run_all_experiments,
+)
 

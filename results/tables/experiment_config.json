@@ -1,0 +1,120 @@
+{
+  "resource_scenarios": {
+    "tight": 0.3,
+    "medium": 0.5,
+    "relaxed": 0.7
+  },
+  "resource_limit_definition": "Each capacity is resource_fraction times the sum of that resource over all findings in the instance (compute_default_budgets).",
+  "pct_risk_reduction_denominator": "sum of R_i over all candidate findings",
+  "pct_kev_coverage_denominator": "count of findings with is_kev == 1",
+  "epss_pipeline_default": "zero_imputation (epss_score = epss.fillna(0.0))",
+  "bpso_params_by_size": {
+    "100": {
+      "n_particles": 30,
+      "max_iter": 200
+    },
+    "1000": {
+      "n_particles": 25,
+      "max_iter": 100
+    },
+    "5000": {
+      "n_particles": 20,
+      "max_iter": 50
+    }
+  },
+  "milp_time_limit_by_size": {
+    "100": 30,
+    "1000": 90,
+    "5000": 180
+  },
+  "bpso_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "dirichlet_samples": 100,
+  "dirichlet_seed": 42,
+  "named_weight_scenarios": [
+    "default",
+    "threat_focused",
+    "asset_focused"
+  ],
+  "result_columns": [
+    "experiment_id",
+    "experiment_family",
+    "dataset_size",
+    "dataset_path",
+    "resource_scenario",
+    "resource_fraction",
+    "method",
+    "seed",
+    "weight_scenario",
+    "weight_sample_id",
+    "epss_strategy",
+    "n_findings",
+    "n_selected",
+    "total_risk_reduction",
+    "total_risk_unmitigated",
+    "pct_risk_reduction",
+    "budget_limit",
+    "budget_consumed",
+    "budget_remaining",
+    "pct_budget_used",
+    "hours_limit",
+    "hours_consumed",
+    "hours_remaining",
+    "pct_hours_used",
+    "downtime_limit",
+    "downtime_consumed",
+    "downtime_remaining",
+    "pct_downtime_used",
+    "n_kev_total",
+    "n_kev_selected",
+    "pct_kev_coverage",
+    "feasible",
+    "runtime_s",
+    "solver_runtime_s",
+    "solver_status",
+    "optimality_gap",
+    "solver_backend",
+    "n_particles",
+    "max_iter",
+    "milp_time_limit",
+    "ran_successfully",
+    "error_message"
+  ],
+  "dataset_files": {
+    "100": "data/synthetic/scored_findings_100.csv",
+    "1000": "data/synthetic/scored_findings_1000.csv",
+    "5000": "data/synthetic/scored_findings_5000.csv"
+  },
+  "figures": [
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/method_comparison_risk.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/runtime_comparison.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/resource_utilization.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/feasibility.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/kev_coverage.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/bpso_variability.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/sensitivity_named_weights.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/sensitivity_dirichlet.png",
+    "C:/Users/akshi/Desktop/OT project/vulnopt/results/figures/epss_handling.png"
+  ],
+  "failed_experiment_count": 0
+}
