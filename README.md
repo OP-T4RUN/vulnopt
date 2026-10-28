@@ -123,8 +123,17 @@ python scripts/fetch_data.py --max-records 5000
 ### Running Tests
 ```bash
 pytest
-pytest tests/test_metrics.py tests/test_experiments.py
+pytest tests/test_metrics.py tests/test_experiments.py tests/test_dashboard.py
 ```
+
+### Running the Streamlit Dashboard
+```bash
+streamlit run streamlit_app.py
+```
+
+The dashboard reads saved experiment tables from `results/tables/` and scored findings from `data/synthetic/`. It does not require NVD/EPSS/KEV network access. Optional plan reconstruction calls the existing solvers (`vulnopt.experiments.run_solver`) for the selected scenario; it does not rewrite Part A CSVs unless you explicitly choose overwrite in the sidebar.
+
+See `demo_script.md` for a walkthrough and `final_report.md` for the written evaluation.
 
 ### Running Evaluation Experiments
 ```bash
@@ -200,4 +209,8 @@ Read-only inputs for `streamlit_app.py`. Column order for the five family tables
 `method` is one of `CVSS-Greedy`, `Risk-Greedy`, `MILP`, `BPSO`. Percentages are on a 0–100 scale. Undefined ratios are empty/`NaN`, not `0`.
 
 Example row: `results/tables/schema_example.csv`. Figures: `results/figures/*.png`.
+
+The dashboard (`streamlit_app.py`, helpers in `vulnopt/dashboard.py`) loads these files as-is. Missing tables, empty files, and NaN metric cells are shown as unavailable rather than replaced with sample values.
+
+Part B is complete: scenario controls, four-method overview, finding inspector, sensitivity views, and CSV export. Written evaluation is in `final_report.md`; a demo walkthrough is in `demo_script.md`. Optional NSGA-II is not included.
 
