@@ -77,7 +77,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running Data Collection (Student 1)
+### Running Data Collection
 ```bash
 # Set your NVD API key in .env or run with existing snapshot
 python scripts/fetch_data.py --max-records 5000
