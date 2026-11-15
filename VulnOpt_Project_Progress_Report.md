@@ -6,10 +6,10 @@
 
 ### Group Information & Submission Metadata
 - **Project Title:** VulnOpt — Risk-Aware Vulnerability Remediation Prioritization Using Optimization Techniques
-- **Course / Subject:** Capstone Project / Optimization & Decision Support Systems
+- **Course / Subject:** Optimization Techniques
 - **Submission Type:** Project Progress & Implementation Status Report
 - **Submission Date:** November 2026
-- **Live Deployment URL:** `https://vulnopt.streamlit.app` *(or team custom URL)*
+- **Live Deployment URL:** `https://vulnopt.streamlit.app`
 - **Repository:** `https://github.com/OP-T4RUN/vulnopt.git`
 - **Group Submission Notice:** Submitted by Group Leader on behalf of the project team.
 
