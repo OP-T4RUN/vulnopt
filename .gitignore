@@ -7,39 +7,36 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-env/
+# Python virtual environments
+.venv/
 venv/
+env/
 ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+.Python
 
-# Testing and Coverage
-.pytest_cache/
-.coverage
-htmlcov/
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Data
-# Raw downloaded files can be large, but keep data/processed and data/synthetic if needed
-data/raw/
-*.csv.gz
-*.tar.gz
+# Operating System
+.DS_Store
+Thumbs.db
 
-# Plan files
+# Logs
+*.log
+
+# Dashboard dynamic rerun outputs
+results/dashboard_rerun/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Plan and prompt instruction files
+Teacher_Requirements_Explained_VulnOpt.md
 VulnOpt_4_Student_Project_Plan.md
 VulnOpt_Problem_Statement_and_Proposed_Solution.md
 PROJECT_STATUS.md
+
 

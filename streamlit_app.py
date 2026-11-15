@@ -11,6 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Optional
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -33,6 +34,7 @@ from vulnopt.dashboard import (
     findings_display_columns,
     findings_snapshot_export,
     format_metric,
+    generate_human_explanation,
     list_figure_paths,
     load_all_tables,
     load_experiment_config,
@@ -51,6 +53,7 @@ from vulnopt.dashboard import (
     weight_choices,
 )
 from vulnopt.experiments import run_all_experiments, quick_config, default_config
+from vulnopt.metrics import canonicalize_method
 from vulnopt.risk_model import ASSET_FOCUSED_WEIGHTS, DEFAULT_WEIGHTS, THREAT_FOCUSED_WEIGHTS
 
 
@@ -136,14 +139,36 @@ def _cached_plan(
     )
     plan = reconstruct_plan(method, scored, problem, seed=seed, dataset_size=dataset_size)
     annotated = annotate_selection(scored, plan["selection"])
+    res = plan["result"]
+    budget_used = float(getattr(res, "budget_used", 0.0))
+    hours_used = float(getattr(res, "hours_used", 0.0))
+    downtime_used = float(getattr(res, "downtime_used", 0.0))
+    total_unmitigated = float(scored["risk_score"].sum()) if "risk_score" in scored.columns else 0.0
+    risk_reduced = float(getattr(res, "total_risk_score", 0.0))
+    pct_risk = (100.0 * risk_reduced / total_unmitigated) if total_unmitigated > 0 else 0.0
+
+    n_kev_total = int((scored["is_kev"] == 1).sum()) if "is_kev" in scored.columns else 0
+    n_kev_selected = int((plan["selected_findings"]["is_kev"] == 1).sum()) if ("is_kev" in plan["selected_findings"].columns) else 0
+    pct_kev = (100.0 * n_kev_selected / n_kev_total) if n_kev_total > 0 else float("nan")
+
     return {
         "annotated": annotated,
         "selected": plan["selected_findings"],
         "n_selected": plan["n_selected"],
-        "status": getattr(plan["result"], "status", None),
-        "gap": getattr(plan["result"], "optimality_gap", None),
-        "feasible": getattr(plan["result"], "feasible", None),
-        "risk": getattr(plan["result"], "total_risk_score", None),
+        "n_total": len(scored),
+        "status": getattr(res, "status", None),
+        "gap": getattr(res, "optimality_gap", None),
+        "feasible": getattr(res, "feasible", None),
+        "risk": risk_reduced,
+        "total_risk_unmitigated": total_unmitigated,
+        "pct_risk_reduction": pct_risk,
+        "budget_used": budget_used,
+        "hours_used": hours_used,
+        "downtime_used": downtime_used,
+        "n_kev_total": n_kev_total,
+        "n_kev_selected": n_kev_selected,
+        "pct_kev_coverage": pct_kev,
+        "solve_time_s": getattr(res, "solve_time_s", None),
     }
 
 
@@ -326,9 +351,161 @@ def main() -> None:
             "Named-weight results are on the Sensitivity tab."
         )
 
-    tab_overview, tab_findings, tab_sensitivity, tab_export = st.tabs(
-        ["Results overview", "Finding inspector", "Sensitivity", "CSV export"]
+    tab_live, tab_overview, tab_findings, tab_sensitivity, tab_assumptions, tab_export = st.tabs(
+        [
+            "🎯 Live Remediation Plan",
+            "📊 Benchmark Comparison",
+            "🔍 Finding Inspector",
+            "📈 Sensitivity Analysis",
+            "⚖️ Model Assumptions",
+            "💾 CSV Export",
+        ]
     )
+
+    with tab_live:
+        st.subheader("🎯 Executive Remediation Plan (Live Optimization)")
+        st.caption(
+            "This decision-support plan is computed live using your current sidebar capacities and risk weights. "
+            "Adjusting the budget, labor hours, downtime, or risk weights immediately recalculates the plan."
+        )
+
+        col_meth, col_info = st.columns([2, 1])
+        with col_meth:
+            active_method = st.radio(
+                "Optimization / Ranking Strategy:",
+                ["MILP (Recommended Exact)", "Risk-Greedy", "CVSS-Greedy", "BPSO"],
+                horizontal=True,
+                index=0,
+                help="Compare exact multi-dimensional knapsack optimization against greedy baselines and swarm heuristics.",
+            )
+            norm_method = canonicalize_method(active_method)
+
+        custom_ok = True
+        if use_custom_weights:
+            custom_ok = abs((w_cvss + w_epss + w_kev + w_crit + w_exp) - 1.0) <= 1e-5
+
+        if not custom_ok:
+            st.error("Custom weights must sum to 1.0 before the plan can be reconstructed.")
+        else:
+            try:
+                live_plan = _cached_plan(
+                    norm_method,
+                    dataset_size,
+                    weight_scenario,
+                    "zero_imputation",
+                    float(budget),
+                    float(hours),
+                    float(downtime),
+                    bool(apply_downtime),
+                    42,
+                    float(w_cvss),
+                    float(w_epss),
+                    float(w_kev),
+                    float(w_crit),
+                    float(w_exp),
+                    bool(use_custom_weights),
+                )
+
+                st.session_state["last_plan"] = {
+                    "method": norm_method,
+                    "dataset_size": dataset_size,
+                    "resource_scenario": resource_scenario,
+                    "budget": budget,
+                    "hours": hours,
+                    "downtime": downtime,
+                    "apply_downtime": apply_downtime,
+                    "weight_scenario": weight_scenario if not use_custom_weights else "custom",
+                    "annotated": live_plan["annotated"],
+                    "selected": live_plan["selected"],
+                }
+
+                # 4 KPI metrics
+                m1, m2, m3, m4 = st.columns(4)
+                with m1:
+                    st.metric(
+                        "Risk Mitigated",
+                        f"{live_plan['pct_risk_reduction']:.1f}%",
+                        f"{live_plan['risk']:,.1f} R_i points",
+                    )
+                with m2:
+                    st.metric(
+                        "Findings Selected",
+                        f"{live_plan['n_selected']:,} / {live_plan['n_total']:,}",
+                        f"{(100.0 * live_plan['n_selected'] / live_plan['n_total']):.1f}% of total",
+                    )
+                with m3:
+                    kev_cov_str = f"{live_plan['pct_kev_coverage']:.1f}%" if pd.notna(live_plan['pct_kev_coverage']) else "N/A"
+                    st.metric(
+                        "CISA KEV Coverage",
+                        f"{live_plan['n_kev_selected']} / {live_plan['n_kev_total']}",
+                        f"{kev_cov_str} weaponized flaws",
+                    )
+                with m4:
+                    feas = live_plan['feasible']
+                    st.metric(
+                        "Plan Feasibility",
+                        "FEASIBLE ✅" if feas else "INFEASIBLE ⚠️",
+                        live_plan['status'] or ("All limits met" if feas else "Capacity exceeded"),
+                    )
+
+                # Resource utilization bars
+                st.markdown("#### ⚙️ Resource Consumption vs. Capacity Limits")
+                rc1, rc2, rc3 = st.columns(3)
+                with rc1:
+                    pct_b = (100.0 * live_plan['budget_used'] / budget) if budget > 0 else 0.0
+                    st.markdown(f"**Budget:** ${live_plan['budget_used']:,.2f} / ${budget:,.2f} (**{pct_b:.1f}%**)")
+                    st.progress(min(1.0, max(0.0, pct_b / 100.0)))
+                with rc2:
+                    pct_h = (100.0 * live_plan['hours_used'] / hours) if hours > 0 else 0.0
+                    st.markdown(f"**Engineer Hours:** {live_plan['hours_used']:,.1f}h / {hours:,.1f}h (**{pct_h:.1f}%**)")
+                    st.progress(min(1.0, max(0.0, pct_h / 100.0)))
+                with rc3:
+                    if apply_downtime and downtime > 0:
+                        pct_dt = (100.0 * live_plan['downtime_used'] / downtime)
+                        st.markdown(f"**Downtime Window:** {live_plan['downtime_used']:,.1f}h / {downtime:,.1f}h (**{pct_dt:.1f}%**)")
+                        st.progress(min(1.0, max(0.0, pct_dt / 100.0)))
+                    else:
+                        st.markdown(f"**Downtime:** {live_plan['downtime_used']:,.1f}h *(unconstrained)*")
+                        st.progress(0.0)
+
+                # Human-Understandable Plain Language Explanation
+                explanation_md = generate_human_explanation(
+                    method=norm_method,
+                    n_selected=live_plan["n_selected"],
+                    n_total=live_plan["n_total"],
+                    budget_used=live_plan["budget_used"],
+                    budget_limit=float(budget),
+                    hours_used=live_plan["hours_used"],
+                    hours_limit=float(hours),
+                    downtime_used=live_plan["downtime_used"],
+                    downtime_limit=float(downtime),
+                    apply_downtime=bool(apply_downtime),
+                    feasible=bool(live_plan["feasible"]),
+                    risk_reduced=live_plan["risk"],
+                    total_risk_unmitigated=live_plan["total_risk_unmitigated"],
+                    pct_risk=live_plan["pct_risk_reduction"],
+                    n_kev_selected=live_plan["n_kev_selected"],
+                    n_kev_total=live_plan["n_kev_total"],
+                    pct_kev=live_plan["pct_kev_coverage"],
+                    weight_scenario=weight_scenario if not use_custom_weights else "custom",
+                    status=live_plan["status"],
+                    gap=live_plan["gap"],
+                )
+                st.info(explanation_md)
+
+                # Top Priority Action List Preview
+                st.markdown("#### 🚨 Top Recommended Patches (Highest Modeled Risk)")
+                sel_df = live_plan["selected"]
+                if not sel_df.empty:
+                    top_cols = [c for c in ("finding_id", "cve_id", "cvss_base", "cvss_severity", "epss", "is_kev", "risk_score", "asset_id", "asset_type", "patch_cost", "engineer_hours", "downtime_hours") if c in sel_df.columns]
+                    top_view = sel_df.sort_values(by="risk_score", ascending=False).head(10)
+                    st.dataframe(top_view[top_cols], use_container_width=True, hide_index=True)
+                    st.caption(f"Showing top 10 of {len(sel_df):,} recommended actions. Use the Finding Inspector tab to search/filter the complete set, or the CSV Export tab to download.")
+                else:
+                    st.warning("No findings could be remediated with the entered limits. Consider increasing budget or available engineer hours.")
+
+            except Exception as exc:
+                st.error(f"Live plan calculation error: {type(exc).__name__}: {exc}")
 
     with tab_overview:
         st.subheader("Saved experiment comparison")
@@ -441,7 +618,7 @@ def main() -> None:
         else:
             compute = st.checkbox(
                 f"Highlight findings selected by {inspector_method}",
-                value=False,
+                value=True,
                 help="Runs the existing solver for the current capacities. Saved overview metrics are not replaced.",
             )
             annotated = findings
@@ -657,6 +834,45 @@ def main() -> None:
             with st.expander("Additional saved figures"):
                 for path in extra_figs:
                     st.image(str(path), caption=path.name)
+
+    with tab_assumptions:
+        st.subheader("⚖️ Model Assumptions, Data Provenance & Scope Boundaries")
+        st.caption(
+            "In compliance with academic transparency and decision-support guidelines, all modeling assumptions, "
+            "synthetic parameter distributions, and operational boundaries are explicitly disclosed below."
+        )
+
+        st.markdown(
+            """
+            ### 1. Data Provenance & Threat Intelligence
+            | Source | Feed / Mechanism | Usage in VulnOpt | Missing Data Policy |
+            |---|---|---|---|
+            | **NIST NVD** | NVD REST API 2.0 | CVSS base scores (v3.1 > v3.0 > v4.0 > v2.0), CWE classifications, descriptions | Records lacking CVSS are excluded from candidate set |
+            | **FIRST EPSS** | Bulk scores (`epss_scores-current.csv.gz`) | Empirical 30-day exploit probability ($E_i \\in [0, 1]$) | Imputed as 0.0 with `epss_missing` flag (sensitivity tested) |
+            | **CISA KEV** | KEV Catalog JSON feed | Confirmed active weaponization in the wild ($K_i \\in \\{0, 1\\}$) | Negative match confirmed after parsing full snapshot |
+
+            ### 2. Synthetic Enterprise Context & Cost Modeling
+            Because live corporate IT infrastructure and patching costs are proprietary:
+            - **Asset Inventories (`data/synthetic/assets.csv`):** Generated across 6 asset archetypes (databases, web servers, app servers, endpoints, identity providers, internal services) with criticality ratings ($1–5$) and network exposure (`internet`, `internal`, `restricted`).
+            - **Remediation Cost ($C_i$):** Right-skewed log-normal distribution (median ~$400, max $6,000) correlated with asset criticality and CVSS.
+            - **Engineer Hours ($T_i$):** Right-skewed log-normal distribution (median ~8h, max 80h).
+            - **Downtime Hours ($D_i$):** Exponential distribution (median 0h for endpoints; 0.25h–12h for databases/critical servers).
+
+            ### 3. Mathematical Optimization & Constraints
+            - **Formulation:** 3-Dimensional Multi-Dimensional Knapsack Problem (3D-MKP).
+            - **Binary Decision Variables:** $x_i \\in \\{0, 1\\}$ representing whether finding $i$ is remediated.
+            - **Objective:** $\\max \\sum R_i x_i$ subject to $\\sum C_i x_i \\le B$, $\\sum T_i x_i \\le H$, and $\\sum D_i x_i \\le W$.
+            - **Solvers:** 
+              - `CVSS-Greedy`: Industry severity ranking baseline ($O(n \\log n)$).
+              - `Risk-Greedy`: Contextual multi-factor ranking baseline ($O(n \\log n)$).
+              - `MILP`: Exact branch-and-bound solver (CBC / HiGHS via PuLP).
+              - `BPSO`: Binary Particle Swarm Optimization metaheuristic with sigmoid probability threshold and greedy repair.
+
+            ### 4. Safety & Scope Boundaries
+            - **Decision Support Prototype:** VulnOpt is an analytical decision-support tool for human review. It does **not** scan networks, probe live targets, connect to production infrastructure, or deploy patches.
+            - **Human-in-the-Loop:** All outputs are advisory remediation work orders intended for human review by security leads and IT system owners.
+            """
+        )
 
     with tab_export:
         st.subheader("Download CSVs")

@@ -474,6 +474,101 @@ def reconstruct_plan(
     }
 
 
+def generate_human_explanation(
+    method: str,
+    n_selected: int,
+    n_total: int,
+    budget_used: float,
+    budget_limit: float,
+    hours_used: float,
+    hours_limit: float,
+    downtime_used: float,
+    downtime_limit: float,
+    apply_downtime: bool,
+    feasible: bool,
+    risk_reduced: float,
+    total_risk_unmitigated: float,
+    pct_risk: float,
+    n_kev_selected: int,
+    n_kev_total: int,
+    pct_kev: float,
+    weight_scenario: str,
+    status: Optional[str] = None,
+    gap: Optional[float] = None,
+) -> str:
+    """
+    Generate an executive, plain-language decision-support explanation of the remediation plan.
+    Fulfills human-understandable reporting requirements for security stakeholders.
+    """
+    pct_b = (100.0 * budget_used / budget_limit) if budget_limit > 0 else 0.0
+    pct_h = (100.0 * hours_used / hours_limit) if hours_limit > 0 else 0.0
+    pct_dt = (100.0 * downtime_used / downtime_limit) if (apply_downtime and downtime_limit > 0) else 0.0
+    n_unselected = max(0, n_total - n_selected)
+
+    # Identify primary resource bottleneck
+    utils = [("budget", pct_b), ("engineer labor hours", pct_h)]
+    if apply_downtime and downtime_limit > 0:
+        utils.append(("downtime window", pct_dt))
+    bottleneck_name, bottleneck_val = max(utils, key=lambda x: x[1])
+
+    b_status = f"${budget_limit - budget_used:,.2f} surplus remaining" if budget_used <= budget_limit else f"${budget_used - budget_limit:,.2f} EXCEEDED"
+    h_status = f"{hours_limit - hours_used:,.1f}h buffer remaining" if hours_used <= hours_limit else f"{hours_used - hours_limit:,.1f}h OVER CAPACITY"
+    dt_status = (
+        f"{downtime_limit - downtime_used:,.1f}h window remaining" if downtime_used <= downtime_limit else f"{downtime_used - downtime_limit:,.1f}h EXCEEDED"
+    ) if apply_downtime else "Not constrained"
+
+    kev_txt = (
+        f"**{n_kev_selected} of {n_kev_total}** ({pct_kev:.1f}%)"
+        if (n_kev_total > 0 and not np.isnan(pct_kev))
+        else "No active KEV exploits present in this subset"
+    )
+
+    lines = [
+        f"### 📋 Executive Remediation Plan Summary ({method})",
+        "",
+        f"**1. Recommended Action:**",
+        f"The **{method}** optimization engine recommends immediately scheduling **{n_selected:,} out of {n_total:,}** candidate vulnerability findings for remediation in this operational cycle.",
+        "",
+        f"**2. Why These Findings Were Prioritized:**",
+        f"Under the **{weight_scenario.replace('_', ' ').title()}** risk weighting profile, this selection maximizes measurable threat mitigation per resource unit:",
+        f"- **Active In-The-Wild Exploits (CISA KEV):** Neutralizes {kev_txt} known weaponized vulnerabilities.",
+        f"- **Exploit Likelihood (EPSS):** Prioritizes vulnerabilities with elevated 30-day weaponization probabilities on exposed assets.",
+        f"- **Asset Context:** Focuses remediation on business-critical databases and external internet-facing services.",
+        "",
+        f"**3. Resource Consumption & Operational Feasibility:**",
+        f"- **Remediation Budget:** **${budget_used:,.2f}** consumed out of **${budget_limit:,.2f}** ({pct_b:.1f}% utilized) — *{b_status}*",
+        f"- **Engineering Hours:** **{hours_used:,.1f} hrs** allocated out of **{hours_limit:,.1f} hrs** ({pct_h:.1f}% utilized) — *{h_status}*",
+    ]
+
+    if apply_downtime:
+        lines.append(f"- **Downtime Window:** **{downtime_used:,.1f} hrs** required out of **{downtime_limit:,.1f} hrs** ({pct_dt:.1f}% utilized) — *{dt_status}*")
+    else:
+        lines.append(f"- **Downtime Window:** **{downtime_used:,.1f} hrs** estimated (maintenance window constraint disabled).")
+
+    if feasible:
+        feas_badge = "✅ **FEASIBLE:** The recommended plan strictly satisfies all specified operational constraints."
+    else:
+        feas_badge = "⚠️ **INFEASIBLE:** The selected set exceeds at least one operational capacity limit."
+    lines.extend([
+        "",
+        f"- **Constraint Compliance:** {feas_badge}",
+        "",
+        f"**4. Expected Security Benefit:**",
+        f"Executing this plan eliminates **{risk_reduced:,.1f} points** of modeled risk, achieving an overall **{pct_risk:.1f}% risk reduction** across the organization's analyzed attack surface. *(Note: Modeled risk reduction reflects calculated multi-factor threat mitigation and should guide human decision-making; it is an analytical estimate rather than a guarantee that zero incidents will occur).* ",
+        "",
+        f"**5. Why Other Vulnerabilities Were Excluded:**",
+        f"The remaining **{n_unselected:,} findings** were deferred because fitting them would violate your available **{bottleneck_name}** ({bottleneck_val:.1f}% saturated). Under multi-dimensional knapsack optimization, these excluded items presented lower marginal risk reduction per dollar/hour than the selected items.",
+        "",
+        f"**6. Recommended Next Steps:**",
+        f"1. **Dispatch Patches:** Download the selected work order from the *CSV Export* tab and deliver to sysadmin/DevOps teams.",
+        f"2. **Schedule Maintenance:** Review the {downtime_used:,.1f}h service downtime schedule with affected application owners.",
+        f"3. **Compensatory Controls:** For the {n_unselected:,} deferred items, verify that network firewalls and intrusion prevention rules are active until the next remediation cycle.",
+    ])
+
+    return "\n".join(lines)
+
+
+
 def annotate_selection(findings: pd.DataFrame, selection: np.ndarray) -> pd.DataFrame:
     out = findings.copy()
     sel = np.asarray(selection, dtype=bool).reshape(-1)
